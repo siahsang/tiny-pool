@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,9 +16,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ObjectPoolImplTest {
 
-    @Before
-    public void setUp() throws Exception {
+    private StringBuilderObjectFactory stringBuilderObjectFactory;
 
+    @Before
+    public void setUp() {
+        stringBuilderObjectFactory = new StringBuilderObjectFactory();
     }
 
     @After
@@ -28,7 +29,6 @@ public class ObjectPoolImplTest {
 
     @Test
     public void testTakeObjectFromPoolHappyPath() {
-        StringBuilderObjectFactory stringBuilderObjectFactory = new StringBuilderObjectFactory();
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 10, stringBuilderObjectFactory);
 
         Optional<StringBuilder> stringBuilder = objectPool.takeObjectFromPool(5);
@@ -39,7 +39,6 @@ public class ObjectPoolImplTest {
     @Test
     public void testTakeObjectFromPoolWhenTimeOutOccurred() {
         final long timeOut = TimeUnit.SECONDS.toMillis(4);
-        StringBuilderObjectFactory stringBuilderObjectFactory = new StringBuilderObjectFactory();
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
 
         // empty pool
@@ -47,13 +46,13 @@ public class ObjectPoolImplTest {
         objectPool.takeObjectFromPool();
 
         Instant start = Instant.now();
-        Optional<StringBuilder> stringBuilder = objectPool.takeObjectFromPool(timeOut);
+        Optional<StringBuilder> stringValue = objectPool.takeObjectFromPool(timeOut);
         Instant finish = Instant.now();
 
 
         long timeElapsed = Duration.between(start, finish).toMillis();
         Assert.assertTrue("Time to wait is wrong", timeElapsed >= 4000 && timeElapsed <= 4005);
-        Assert.assertFalse(stringBuilder.isPresent());
+        Assert.assertFalse(stringValue.isPresent());
 
     }
 
