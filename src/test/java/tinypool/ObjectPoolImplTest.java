@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,7 +53,7 @@ public class ObjectPoolImplTest {
 
         long timeElapsed = Duration.between(start, finish).toMillis();
         Assert.assertTrue("Time to wait is wrong", timeElapsed >= 4000 && timeElapsed <= 4005);
-        Assert.assertTrue("Pool should be empty", !stringBuilder.isPresent());
+        Assert.assertFalse(stringBuilder.isPresent());
 
     }
 

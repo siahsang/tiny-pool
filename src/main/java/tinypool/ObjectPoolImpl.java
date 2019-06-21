@@ -51,7 +51,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
         } catch (InterruptedException e) {
             // no-op
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
 
         return Optional.empty();
