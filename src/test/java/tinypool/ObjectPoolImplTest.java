@@ -57,11 +57,20 @@ public class ObjectPoolImplTest {
     }
 
     @Test
-    public void returnObjectToPool() {
+    public void returnObjectToPoolHappyPath() {
+        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
+
+        StringBuilder objectFromPool = objectPool.takeObjectFromPool().get();
+
+        // todo : check size of remaining object after return to the pool
+        objectPool.returnObjectToPool(objectFromPool);
+
     }
 
     @Test
     public void terminatePool() {
+        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
+        objectPool.terminatePool();
     }
 
 

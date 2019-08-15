@@ -17,7 +17,7 @@ public class StringBuilderObjectFactory implements ObjectFactory<StringBuilder> 
     }
 
     @Override
-    public void destroyObject() {
-        
+    public void destroyObject(StringBuilder object) {
+        // nothing
     }
 }

@@ -63,12 +63,19 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     }
 
     @Override
-    public void returnObjectToPool(T object) {
+    public void returnObjectToPool(T element) {
+        objectPool.offer(element);
 
     }
 
     @Override
     public void terminatePool() {
 
+        while (Objects.nonNull(objectPool.peek())) {
+            T polledObject = objectPool.poll();
+            if (Objects.nonNull(polledObject)) {
+                objectFactory.destroyObject(polledObject);
+            }
+        }
     }
 }

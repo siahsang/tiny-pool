@@ -10,7 +10,7 @@ public interface ObjectFactory<T> {
 
     T resetObject(T oldObject);
 
-    void destroyObject();
+    void destroyObject(T object);
 
 
 }
