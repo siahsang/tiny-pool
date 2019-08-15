@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
-
     private final int minSize;
 
     private final int maxSize;
@@ -64,7 +63,9 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
     @Override
     public void returnObjectToPool(T element) {
-        objectPool.offer(element);
+        if (!objectPool.offer(element)) {
+            // do nothing
+        }
 
     }
 
