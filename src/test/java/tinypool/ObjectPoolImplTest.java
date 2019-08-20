@@ -57,21 +57,50 @@ public class ObjectPoolImplTest {
     }
 
     @Test
-    public void returnObjectToPoolHappyPath() {
-        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
+    public void testReturnObjectToPool() {
+        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(5, 10, stringBuilderObjectFactory);
 
         StringBuilder objectFromPool = objectPool.takeObjectFromPool().get();
 
-        // todo : check size of remaining object after return to the pool
         objectPool.returnObjectToPool(objectFromPool);
+        Assert.assertEquals(10, objectPool.remainingCapacity());
+        Assert.assertEquals(5, objectPool.totalCreatedObject());
 
     }
 
     @Test
-    public void terminatePool() {
+    public void testTerminatePool() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
         objectPool.terminatePool();
+
+        Assert.assertEquals(0, objectPool.remainingCapacity());
+        Assert.assertEquals(0, objectPool.totalCreatedObject());
     }
 
+    @Test
+    public void testVariousMetrics() {
+        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(5, 10, stringBuilderObjectFactory);
+
+        Assert.assertEquals(10, objectPool.remainingCapacity());
+        Assert.assertEquals(5, objectPool.totalCreatedObject());
+
+        // take one object & test
+        Optional<StringBuilder> objectFromPool = objectPool.takeObjectFromPool();
+        Assert.assertTrue(objectFromPool.isPresent());
+
+        Assert.assertEquals(9, objectPool.remainingCapacity());
+        Assert.assertEquals(5, objectPool.totalCreatedObject());
+
+
+        // take remaining object & test
+        for (int i = 0; i < 9; i++) {
+            objectPool.takeObjectFromPool();
+        }
+        Assert.assertEquals(0, objectPool.remainingCapacity());
+        Assert.assertEquals(10, objectPool.totalCreatedObject());
+
+
+
+    }
 
 }

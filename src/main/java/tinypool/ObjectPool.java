@@ -32,6 +32,21 @@ public interface ObjectPool<T> {
     void returnObjectToPool(T element);
 
     /**
+     * Return total remaining capacity in the pool. That is the number of objects that
+     * this pool could create.
+     *
+     * @return the number of remaining capacity in the pool
+     */
+    int remainingCapacity();
+
+    /**
+     * Return total created objects.
+     *
+     * @return total created object in the pool
+     */
+    int totalCreatedObject();
+
+    /**
      * Terminate pool
      */
     void terminatePool();
