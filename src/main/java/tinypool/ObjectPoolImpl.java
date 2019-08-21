@@ -46,7 +46,6 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
         for (int i = 0; i < this.minSize; i++) {
             objectPool.add(objectFactory.createObject());
             totalCreatedObjects.incrementAndGet();
-
         }
     }
 
@@ -116,6 +115,5 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
             objectPool.add(objectFactory.createObject());
             totalCreatedObjects.incrementAndGet();
         }
-
     }
 }

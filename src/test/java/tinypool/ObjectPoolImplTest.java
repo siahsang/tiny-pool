@@ -99,6 +99,10 @@ public class ObjectPoolImplTest {
         Assert.assertEquals(0, objectPool.remainingCapacity());
         Assert.assertEquals(10, objectPool.totalCreatedObject());
 
+        // take from empty pool & test
+        Optional<StringBuilder> emptyObject = objectPool.takeObject();
+        Assert.assertFalse(emptyObject.isPresent());
+
         // return back one object & test
         objectPool.returnObjectToPool(objectFromPool.get());
         Assert.assertEquals(1, objectPool.remainingCapacity());
