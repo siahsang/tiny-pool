@@ -52,7 +52,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     @Override
     public Optional<T> takeObject(final long timeOut) {
         try {
-
+            // todo: check if pool is terminated
             expandPoolIfNecessary();
 
             T pooledObject = objectPool.poll(timeOut, TimeUnit.MILLISECONDS);
@@ -76,6 +76,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
     @Override
     public void returnObjectToPool(T element) {
+        // todo: check if pool is terminated
         Objects.requireNonNull(element, "Returned element should not be null");
 
         if (objectPool.offer(element)) {
