@@ -19,7 +19,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
     private final AtomicInteger totalCreatedObjects = new AtomicInteger(0);
 
-    private final AtomicInteger reamingCapacity = new AtomicInteger();
+    private final AtomicInteger remainingCapacity = new AtomicInteger();
 
     private final ObjectFactory<T> objectFactory;
 
@@ -33,7 +33,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
         this.minSize = minSize;
         this.maxSize = maxSize;
-        this.reamingCapacity.set(maxSize);
+        this.remainingCapacity.set(maxSize);
         this.objectFactory = objectFactory;
 
         this.objectPool = new ArrayBlockingQueue<>(maxSize);
@@ -51,11 +51,14 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     }
 
     @Override
-    public Optional<T> takeObjectFromPool(final long timeOut) {
+    public Optional<T> takeObject(final long timeOut) {
         try {
+
+            expandPoolIfNecessary();
+
             T pooledObject = objectPool.poll(timeOut, TimeUnit.MILLISECONDS);
             if (!Objects.isNull(pooledObject)) {
-                reamingCapacity.decrementAndGet();
+                remainingCapacity.decrementAndGet();
                 return Optional.of(pooledObject);
             }
 
@@ -68,21 +71,23 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     }
 
     @Override
-    public Optional<T> takeObjectFromPool() {
-        return takeObjectFromPool(-1);
+    public Optional<T> takeObject() {
+        return takeObject(-1);
     }
 
     @Override
     public void returnObjectToPool(T element) {
+        Objects.requireNonNull(element, "Returned element should not be null");
+
         if (objectPool.offer(element)) {
-            reamingCapacity.incrementAndGet();
+            remainingCapacity.incrementAndGet();
         }
 
     }
 
     @Override
     public int remainingCapacity() {
-        return isTerminated.get() ? 0 : reamingCapacity.get();
+        return isTerminated.get() ? 0 : remainingCapacity.get();
     }
 
     @Override
@@ -98,11 +103,19 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
                 if (Objects.nonNull(polledObject)) {
                     objectFactory.destroyObject(polledObject);
                     totalCreatedObjects.decrementAndGet();
-                    reamingCapacity.decrementAndGet();
+                    remainingCapacity.decrementAndGet();
                 }
             }
         }
+    }
 
+    private synchronized void expandPoolIfNecessary() {
+        T element = objectPool.peek();
+
+        if (Objects.isNull(element) && totalCreatedObject() < maxSize) {
+            objectPool.add(objectFactory.createObject());
+            totalCreatedObjects.incrementAndGet();
+        }
 
     }
 }

@@ -31,7 +31,7 @@ public class ObjectPoolImplTest {
     public void testTakeObjectFromPoolHappyPath() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 10, stringBuilderObjectFactory);
 
-        Optional<StringBuilder> stringBuilder = objectPool.takeObjectFromPool(5);
+        Optional<StringBuilder> stringBuilder = objectPool.takeObject(5);
 
         Assert.assertTrue(stringBuilder.isPresent());
     }
@@ -42,11 +42,11 @@ public class ObjectPoolImplTest {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
 
         // empty pool
-        objectPool.takeObjectFromPool();
-        objectPool.takeObjectFromPool();
+        objectPool.takeObject();
+        objectPool.takeObject();
 
         Instant start = Instant.now();
-        Optional<StringBuilder> stringValue = objectPool.takeObjectFromPool(timeOut);
+        Optional<StringBuilder> stringValue = objectPool.takeObject(timeOut);
         Instant finish = Instant.now();
 
 
@@ -60,7 +60,7 @@ public class ObjectPoolImplTest {
     public void testReturnObjectToPool() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(5, 10, stringBuilderObjectFactory);
 
-        StringBuilder objectFromPool = objectPool.takeObjectFromPool().get();
+        StringBuilder objectFromPool = objectPool.takeObject().get();
 
         objectPool.returnObjectToPool(objectFromPool);
         Assert.assertEquals(10, objectPool.remainingCapacity());
@@ -85,7 +85,7 @@ public class ObjectPoolImplTest {
         Assert.assertEquals(5, objectPool.totalCreatedObject());
 
         // take one object & test
-        Optional<StringBuilder> objectFromPool = objectPool.takeObjectFromPool();
+        Optional<StringBuilder> objectFromPool = objectPool.takeObject();
         Assert.assertTrue(objectFromPool.isPresent());
 
         Assert.assertEquals(9, objectPool.remainingCapacity());
@@ -94,13 +94,18 @@ public class ObjectPoolImplTest {
 
         // take remaining object & test
         for (int i = 0; i < 9; i++) {
-            objectPool.takeObjectFromPool();
+            objectPool.takeObject();
         }
         Assert.assertEquals(0, objectPool.remainingCapacity());
         Assert.assertEquals(10, objectPool.totalCreatedObject());
 
+        // return back one object & test
+        objectPool.returnObjectToPool(objectFromPool.get());
+        Assert.assertEquals(1, objectPool.remainingCapacity());
+        Assert.assertEquals(10, objectPool.totalCreatedObject());
 
 
+        
     }
 
 }

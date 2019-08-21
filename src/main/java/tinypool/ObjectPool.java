@@ -15,14 +15,14 @@ public interface ObjectPool<T> {
      * @param timeOut Amount of time(millisecond) to wait for an object to become available in the pool
      * @return an element from the pool
      */
-    Optional<T> takeObjectFromPool(long timeOut);
+    Optional<T> takeObject(long timeOut);
 
     /**
      * Take an element from the pool and return to the caller.<br>
      *
      * @return an element from the pool
      */
-    Optional<T> takeObjectFromPool();
+    Optional<T> takeObject();
 
     /**
      * Return object to the pool
@@ -33,7 +33,7 @@ public interface ObjectPool<T> {
 
     /**
      * Return total remaining capacity in the pool. That is the number of objects that
-     * this pool could create.
+     * this pool could return to client.
      *
      * @return the number of remaining capacity in the pool
      */
