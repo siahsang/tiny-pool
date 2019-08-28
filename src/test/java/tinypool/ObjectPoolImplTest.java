@@ -57,12 +57,34 @@ public class ObjectPoolImplTest {
     }
 
     @Test
+    public void testTakeFromPoolWhenAlreadyTerminated() throws Exception {
+        final long timeOut = TimeUnit.SECONDS.toMillis(4);
+        ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
+
+        // take item
+        objectPool.takeObject();
+
+        // terminate object
+        objectPool.terminate();
+
+        Exception exception = null;
+        try {
+            objectPool.takeObject();
+        } catch (IllegalStateException e) {
+            exception = e;
+        }
+
+        Assert.assertEquals(IllegalStateException.class, exception.getClass());
+
+    }
+
+    @Test
     public void testReturnObjectToPool() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(5, 10, stringBuilderObjectFactory);
 
         StringBuilder objectFromPool = objectPool.takeObject().get();
 
-        objectPool.returnObjectToPool(objectFromPool);
+        objectPool.returnObject(objectFromPool);
         Assert.assertEquals(10, objectPool.remainingCapacity());
         Assert.assertEquals(5, objectPool.totalCreatedObject());
 
@@ -71,7 +93,7 @@ public class ObjectPoolImplTest {
     @Test
     public void testTerminatePool() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 2, stringBuilderObjectFactory);
-        objectPool.terminatePool();
+        objectPool.terminate();
 
         Assert.assertEquals(0, objectPool.remainingCapacity());
         Assert.assertEquals(0, objectPool.totalCreatedObject());
@@ -104,12 +126,11 @@ public class ObjectPoolImplTest {
         Assert.assertFalse(emptyObject.isPresent());
 
         // return back one object & test
-        objectPool.returnObjectToPool(objectFromPool.get());
+        objectPool.returnObject(objectFromPool.get());
         Assert.assertEquals(1, objectPool.remainingCapacity());
         Assert.assertEquals(10, objectPool.totalCreatedObject());
 
 
-        
     }
 
 }

@@ -18,21 +18,21 @@ public interface ObjectPool<T> {
     Optional<T> takeObject(long timeOut);
 
     /**
-     * Take an element from the pool and return to the caller.<br>
+     * Take an element from the pool and return to the caller. If pool is shutting down throws exception.
      *
      * @return an element from the pool
      */
     Optional<T> takeObject();
 
     /**
-     * Return object to the pool
+     * Return object to the pool. If pool is shutting down throws exception.
      *
      * @param element An element to return to the pool
      */
-    void returnObjectToPool(T element);
+    void returnObject(T element);
 
     /**
-     * Return total remaining capacity in the pool. That is the number of objects that
+     * Return total remaining capacity in the pool. That is the remaining number of objects that
      * this pool could return to client.
      *
      * @return the number of remaining capacity in the pool
@@ -49,6 +49,6 @@ public interface ObjectPool<T> {
     /**
      * Terminate pool
      */
-    void terminatePool();
+    void terminate();
 
 }
