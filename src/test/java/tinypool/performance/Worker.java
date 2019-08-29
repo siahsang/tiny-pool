@@ -44,6 +44,6 @@ public abstract class Worker implements Runnable {
     }
 
 
-    abstract void doWork();
+    public abstract void doWork();
 
 }

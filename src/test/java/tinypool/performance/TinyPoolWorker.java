@@ -20,8 +20,8 @@ public class TinyPoolWorker extends Worker {
 
     @Override
     public void doWork() {
-        for (long i = 0; i < loop; i++) {
-            try {
+        try {
+            for (long i = 0; i < loop; i++) {
                 Optional<StringBuilder> stringBuilder = tinyPool.takeObject();
 
                 if (stringBuilder.isPresent()) {
@@ -30,12 +30,9 @@ public class TinyPoolWorker extends Worker {
                 } else {
                     errorCount++;
                 }
-
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                errorCount++;
             }
+        } catch (Exception ex) {
+            errorCount++;
         }
     }
 }
