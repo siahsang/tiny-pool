@@ -1,9 +1,14 @@
 package tinypool.performance;
 
 import org.junit.Test;
+import org.vibur.objectpool.ConcurrentPool;
+import org.vibur.objectpool.PoolService;
+import org.vibur.objectpool.util.ConcurrentLinkedDequeCollection;
 import tinypool.ObjectPool;
 import tinypool.ObjectPoolImpl;
 import tinypool.StringBuilderObjectFactory;
+import tinypool.performance.vibur.ViburObjectFactory;
+import tinypool.performance.vibur.ViburObjectWorker;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -12,30 +17,48 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class PerformanceTest {
-    private final int WORKER_COUNT = 500;
-    private final int WORKER_OPERATION = 100;
+    private final int WORKER_COUNT = 50;
+    private final int WORKER_OPERATION = 1000;
+    private final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(WORKER_COUNT);
+
 
     @Test
     public void testPerformanceTinyPool() throws Exception {
 
-        CountDownLatch countDownLatch = new CountDownLatch(WORKER_COUNT);
-
         Worker[] tinyPoolWorkers = new TinyPoolWorker[WORKER_COUNT];
-        ObjectPool<StringBuilder> pool = new ObjectPoolImpl<>(5, 16, new StringBuilderObjectFactory());
+        ObjectPool<StringBuilder> pool = new ObjectPoolImpl<>(50, 50, new StringBuilderObjectFactory());
 
         for (int i = 0; i < WORKER_COUNT; i++) {
-            tinyPoolWorkers[i] = new TinyPoolWorker(countDownLatch, WORKER_OPERATION, pool);
+            tinyPoolWorkers[i] = new TinyPoolWorker(COUNT_DOWN_LATCH, WORKER_OPERATION, pool);
             new Thread(tinyPoolWorkers[i]).start();
         }
 
-        countDownLatch.await();
+        COUNT_DOWN_LATCH.await();
 
         printStatistics("TinyPool", tinyPoolWorkers);
-
-
     }
 
-    private void printStatistics(String poolName, Worker[] workers) {
+    @Test
+    public void testPerformanceViburObjectPool() throws Exception {
+        Worker[] tinyPoolWorkers = new ViburObjectWorker[WORKER_COUNT];
+        PoolService<StringBuilder> pool = new ConcurrentPool<>(new ConcurrentLinkedDequeCollection<>(),
+                new ViburObjectFactory(), 50, 50, true, null);
+
+        for (int i = 0; i < WORKER_COUNT; i++) {
+            tinyPoolWorkers[i] = new ViburObjectWorker(COUNT_DOWN_LATCH, WORKER_OPERATION, pool);
+            new Thread(tinyPoolWorkers[i]).start();
+        }
+
+        COUNT_DOWN_LATCH.await();
+
+        printStatistics("Vibur Object Pool", tinyPoolWorkers);
+    }
+
+
+
+
+
+    private void printStatistics(final String poolName, Worker[] workers) {
         long totalTimeMs = 0;
         long totalErrorCounts = 0;
 
@@ -44,13 +67,12 @@ public class PerformanceTest {
             totalErrorCounts += worker.getErrorCount();
         }
 
-        final double averageThroughput = (double) totalTimeMs / (WORKER_COUNT * WORKER_OPERATION);
         final long errorRatio = totalErrorCounts / (WORKER_COUNT * WORKER_OPERATION);
 
         System.out.println("Statistics for " + poolName + " --------------------- ");
 
         System.out.println("Error ration " + errorRatio);
-        System.out.println("Average throughput per MS " + averageThroughput);
+        System.out.println("Total execution time ms " + totalTimeMs);
 
     }
 
