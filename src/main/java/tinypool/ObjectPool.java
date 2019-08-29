@@ -11,6 +11,7 @@ public interface ObjectPool<T> {
     /**
      * Take an element from the pool and return to the caller.<br>
      * Wait for {@code timeOut} millisecond to object become available.
+     * If timeOut occur and pool has not any object then return an empty {@link Optional}
      *
      * @param timeOut Amount of time(millisecond) to wait for an object to become available in the pool
      * @return an element from the pool
