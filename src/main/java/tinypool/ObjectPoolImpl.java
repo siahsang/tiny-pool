@@ -79,7 +79,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     @Override
     public void returnObject(T element) {
         if (isTerminated.get()) {
-            throw new IllegalStateException("The pool have been shutting down");
+            throw new IllegalStateException("The pool has been shutting down");
         }
         Objects.requireNonNull(element, "Returned element should not be null");
 

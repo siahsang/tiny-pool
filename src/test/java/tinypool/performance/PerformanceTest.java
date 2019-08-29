@@ -55,9 +55,6 @@ public class PerformanceTest {
     }
 
 
-
-
-
     private void printStatistics(final String poolName, Worker[] workers) {
         long totalTimeMs = 0;
         long totalErrorCounts = 0;
