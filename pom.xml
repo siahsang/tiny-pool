@@ -19,7 +19,7 @@
     <scm>
         <connection>scm:git:https://github.com/j-alimohammadi/tiny-pool.git</connection>
         <url>https://github.com/j-alimohammadi/tiny-pool</url>
-        <developerConnection>scm:git:https://github.com/user/project.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/j-alimohammadi/tiny-pool.git</developerConnection>
     </scm>
 
 
