@@ -50,11 +50,12 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     }
 
     @Override
-    public Optional<T> takeObject(final long timeOut) {
+    public Optional<T> tryTakeObject(final long timeOut) {
         try {
             if (isTerminated.get()) {
-                throw new IllegalStateException("The pool have been shutting down");
+                throw new IllegalStateException("The pool has been shutting down");
             }
+
             expandPoolIfNecessary();
 
             T pooledObject = objectPool.poll(timeOut, TimeUnit.MILLISECONDS);
@@ -73,7 +74,7 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
 
     @Override
     public Optional<T> takeObject() {
-        return takeObject(-1);
+        return tryTakeObject(-1);
     }
 
     @Override
@@ -114,6 +115,9 @@ public class ObjectPoolImpl<T> implements ObjectPool<T> {
     }
 
     private synchronized void expandPoolIfNecessary() {
+        if (totalCreatedObject() >= maxSize) {
+            return;
+        }
         T element = objectPool.peek();
 
         if (Objects.isNull(element) && totalCreatedObject() < maxSize) {

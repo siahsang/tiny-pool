@@ -31,9 +31,14 @@ public class ObjectPoolImplTest {
     public void testTakeObjectFromPoolHappyPath() {
         ObjectPoolImpl<StringBuilder> objectPool = new ObjectPoolImpl<>(1, 10, stringBuilderObjectFactory);
 
-        Optional<StringBuilder> stringBuilder = objectPool.takeObject(5);
+        Optional<StringBuilder> stringBuilder = objectPool.tryTakeObject(5);
 
         Assert.assertTrue(stringBuilder.isPresent());
+    }
+
+    @Test
+    public void testTakeObjectBlockForQueue() throws Exception {
+
     }
 
     @Test
@@ -46,7 +51,7 @@ public class ObjectPoolImplTest {
         objectPool.takeObject();
 
         Instant start = Instant.now();
-        Optional<StringBuilder> stringValue = objectPool.takeObject(timeOut);
+        Optional<StringBuilder> stringValue = objectPool.tryTakeObject(timeOut);
         Instant finish = Instant.now();
 
 

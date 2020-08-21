@@ -16,14 +16,15 @@ public interface ObjectPool<T> {
      * @param timeOut Amount of time(millisecond) to wait for an object to become available in the pool
      * @return an element from the pool
      */
-    Optional<T> takeObject(long timeOut);
+    Optional<T> tryTakeObject(long timeOut) throws InterruptedException;
 
     /**
-     * Take an element from the pool and return to the caller. If pool is shutting down throws exception.
+     * Take an element from the pool and return to the caller. Blocks until element available in the queue.
+     * <br>If pool is shutting down throws exception.
      *
      * @return an element from the pool
      */
-    Optional<T> takeObject();
+    Optional<T> takeObject() throws InterruptedException;
 
     /**
      * Return object to the pool. If pool is shutting down throws exception.

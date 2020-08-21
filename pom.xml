@@ -16,6 +16,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://github.com/j-alimohammadi/tiny-pool.git</connection>
+        <url>https://github.com/j-alimohammadi/tiny-pool</url>
+        <developerConnection>scm:git:https://github.com/user/project.git</developerConnection>
+    </scm>
+
+
     <dependencies>
 
         <dependency>
@@ -30,10 +37,18 @@
             <artifactId>vibur-object-pool</artifactId>
             <version>23.0</version>
         </dependency>
-        
+
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.11.2</version>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
         </pluginManagement>
     </build>
