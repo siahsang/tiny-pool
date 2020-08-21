@@ -62,6 +62,10 @@
                     once for the release version and the next development version -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
 
+                    <!--
+                        During release:perform, enable the "release" profile
+                    -->
+                    <releaseProfiles>release</releaseProfiles>
                 </configuration>
             </plugin>
         </plugins>
