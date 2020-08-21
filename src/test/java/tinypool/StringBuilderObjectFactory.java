@@ -1,9 +1,12 @@
 package tinypool;
 
+import org.junit.Ignore;
+
 /**
  * @author Javad Alimohammadi<bs.alimohammadi@gmail.com>
  */
 
+@Ignore
 public class StringBuilderObjectFactory implements ObjectFactory<StringBuilder> {
     @Override
     public StringBuilder createObject() {

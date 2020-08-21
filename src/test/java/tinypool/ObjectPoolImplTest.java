@@ -1,9 +1,6 @@
 package tinypool;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,6 +11,7 @@ import java.util.concurrent.TimeUnit;
  * @author Javad Alimohammadi<bs.alimohammadi@gmail.com>
  */
 
+@Ignore
 public class ObjectPoolImplTest {
 
     private StringBuilderObjectFactory stringBuilderObjectFactory;
