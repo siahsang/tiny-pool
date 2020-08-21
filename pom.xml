@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>tiny-pool</groupId>
@@ -19,8 +20,8 @@
         <connection>scm:git:https://github.com/j-alimohammadi/tiny-pool.git</connection>
         <url>https://github.com/j-alimohammadi/tiny-pool</url>
         <developerConnection>scm:git:https://github.com/j-alimohammadi/tiny-pool.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 
     <dependencies>
@@ -55,7 +56,13 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M1</version>
                 <configuration>
+                    <!-- Default tag format for project -->
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+
+                    <!-- If have a multi-module project and all of have same version you will be asked only
+                    once for the release version and the next development version -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+
                 </configuration>
             </plugin>
         </plugins>
