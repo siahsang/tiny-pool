@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>tiny-pool</groupId>
     <artifactId>tiny-pool</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
 
     <name>tiny-pool</name>
 
@@ -40,43 +41,33 @@
 
     </dependencies>
 
+    <distributionManagement>
+        <!-- defining the snapshot remote repository location for your artifact. Version name that end with -SNAPSHOT push to this repository -->
+        <snapshotRepository>
+            <!-- The id of the server element in settings.xml from which the user credentials
+             for accessing the repository manager should be retrieved.
+            -->
+            <id>my-nexus-snapshots-repository</id>
+            <url>http://45.82.136.177:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+
+        <!-- defining the remote repository location for your artifact.  -->
+        <repository>
+            <!-- The id of the server element in settings.xml from which the user credentials
+                for accessing the repository manager should be retrieved.
+            -->
+            <id>my-nexus-repository</id>
+            <url>http://45.82.136.177:8081/repository/maven-releases/</url>
+        </repository>
+
+    </distributionManagement>
+
+
     <profiles>
         <profile>
             <id>release</id>
             <build>
                 <finalName>tiny-pool-release-${project.version}</finalName>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.5.1</version>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <serverId>my-nexus-repository</serverId>
-                            <nexusUrl>http://45.82.136.177:8081/repository/maven-releases/</nexusUrl>
-                            <skipStaging>true</skipStaging>
-                        </configuration>
-                    </plugin>
-
-                </plugins>
-
             </build>
         </profile>
 
