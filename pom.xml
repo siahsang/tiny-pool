@@ -6,7 +6,7 @@
 
     <groupId>tiny-pool</groupId>
     <artifactId>tiny-pool</artifactId>
-    <version>1.4</version>
+    <version>1.4-SNAPSHOT</version>
 
     <name>tiny-pool</name>
 
